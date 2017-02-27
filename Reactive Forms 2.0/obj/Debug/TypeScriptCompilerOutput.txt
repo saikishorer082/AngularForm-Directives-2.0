@@ -1,0 +1,6 @@
+D:\Angular 2\Reactive Forms 2.0\Reactive Forms 2.0\app\app.component.js
+D:\Angular 2\Reactive Forms 2.0\Reactive Forms 2.0\app\app.component.js.map
+D:\Angular 2\Reactive Forms 2.0\Reactive Forms 2.0\app\app.module.js
+D:\Angular 2\Reactive Forms 2.0\Reactive Forms 2.0\app\app.module.js.map
+D:\Angular 2\Reactive Forms 2.0\Reactive Forms 2.0\app\main.js
+D:\Angular 2\Reactive Forms 2.0\Reactive Forms 2.0\app\main.js.map
