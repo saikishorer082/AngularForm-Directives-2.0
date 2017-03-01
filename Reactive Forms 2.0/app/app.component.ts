@@ -1,9 +1,11 @@
-﻿import { Component } from "@angular/core";
+﻿import { Component } from '@angular/core';
 
 @Component({
-    selector: "pm-app",
-    templateUrl: "/app/app.component.html"
+    selector: 'my-app',
+    template: `
+        <div class="container">
+          <my-signup></my-signup>
+        </div>
+    `
 })
-export class AppComponent {
-    pageTitle: string = 'Angular 2.0 StartUp'
-}
+export class AppComponent { }

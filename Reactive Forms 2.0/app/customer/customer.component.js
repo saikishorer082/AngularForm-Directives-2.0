@@ -6,16 +6,22 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 var core_1 = require("@angular/core");
-var AppComponent = (function () {
-    function AppComponent() {
+var customer_1 = require("./customer");
+var CustomerComponent = (function () {
+    function CustomerComponent() {
+        this.customer = new customer_1.Customer();
     }
-    return AppComponent;
+    CustomerComponent.prototype.save = function (customerForm) {
+        console.log(customerForm.form);
+        console.log('Saved: ' + JSON.stringify(customerForm.value));
+    };
+    return CustomerComponent;
 }());
-AppComponent = __decorate([
+CustomerComponent = __decorate([
     core_1.Component({
-        selector: 'my-app',
-        template: "\n        <div class=\"container\">\n          <my-signup></my-signup>\n        </div>\n    "
+        selector: 'my-signup',
+        templateUrl: './app/customer/customer.component.html'
     })
-], AppComponent);
-exports.AppComponent = AppComponent;
-//# sourceMappingURL=app.component.js.map
+], CustomerComponent);
+exports.CustomerComponent = CustomerComponent;
+//# sourceMappingURL=customer.component.js.map
