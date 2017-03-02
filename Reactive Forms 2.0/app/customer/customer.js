@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var Customer = (function () {
     function Customer(firstName, lastName, email, sendCatalog, addressType, street1, street2, city, state, zip) {
         if (firstName === void 0) { firstName = ''; }
