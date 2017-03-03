@@ -13,6 +13,26 @@ var core_1 = require("@angular/core");
 //building blocks
 var forms_1 = require("@angular/forms");
 var customer_1 = require("./customer");
+function emailMatcher(c) {
+    var emailControl = c.get('email');
+    var confirmControl = c.get('confirmEmail');
+    if (emailControl.pristine || confirmControl.pristine) {
+        return null;
+    }
+    if (emailControl.value === confirmControl.value) {
+        return null;
+    }
+    return { 'match': true };
+}
+function ratingRange(min, max) {
+    return function (c) {
+        if (c.value != undefined && (isNaN(c.value) || c.value < min || c.value > max)) {
+            return { 'range': true };
+        }
+        ;
+        return null;
+    };
+}
 var CustomerComponent = (function () {
     function CustomerComponent(fb) {
         this.fb = fb;
@@ -40,15 +60,31 @@ var CustomerComponent = (function () {
     };
     CustomerComponent.prototype.ngOnInit = function () {
         this.customerForm = this.fb.group({
-            firstName: '',
-            lastName: '',
-            email: '',
+            firstName: ['', [forms_1.Validators.required, forms_1.Validators.minLength(3)]],
+            lastName: ['', [forms_1.Validators.required, forms_1.Validators.minLength(50)]],
+            emailGroup: this.fb.group({
+                email: ['', [forms_1.Validators.required, forms_1.Validators.pattern('[a-z0-9._%+-]+@[a-z0-9.-]+')]],
+                confirmEmail: ['', forms_1.Validators.required],
+            }, { validator: emailMatcher }),
+            phone: '',
+            notification: 'email',
+            rating: ['', ratingRange(1, 5)],
             sendCatalog: true
         });
     };
     CustomerComponent.prototype.save = function () {
         console.log(this.customerForm);
         console.log('Saved: ' + JSON.stringify(this.customerForm.value));
+    };
+    CustomerComponent.prototype.setNotification = function (notifyVia) {
+        var phoneControl = this.customerForm.get('phone');
+        if (notifyVia === 'text') {
+            phoneControl.setValidators(forms_1.Validators.required);
+        }
+        else {
+            phoneControl.clearValidators();
+        }
+        phoneControl.updateValueAndValidity();
     };
     return CustomerComponent;
 }());
