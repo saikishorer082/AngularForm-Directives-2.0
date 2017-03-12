@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = require("@angular/core");
 //building blocks
 var forms_1 = require("@angular/forms");
+require("rxjs/add/operator/debounceTime");
 var customer_1 = require("./customer");
 function emailMatcher(c) {
     var emailControl = c.get('email');
@@ -39,6 +40,10 @@ var CustomerComponent = (function () {
         this.getData = false;
         //Explicit Defining of root 
         this.customer = new customer_1.Customer();
+        this.validationMessages = {
+            required: 'Please enter your email address.',
+            pattern: 'Please enter a valid email address.'
+        };
     }
     CustomerComponent.prototype.populateTestData = function () {
         this.customerForm.setValue({
@@ -59,6 +64,7 @@ var CustomerComponent = (function () {
         return this.getData = !this.getData;
     };
     CustomerComponent.prototype.ngOnInit = function () {
+        var _this = this;
         this.customerForm = this.fb.group({
             firstName: ['', [forms_1.Validators.required, forms_1.Validators.minLength(3)]],
             lastName: ['', [forms_1.Validators.required, forms_1.Validators.minLength(50)]],
@@ -71,10 +77,26 @@ var CustomerComponent = (function () {
             rating: ['', ratingRange(1, 5)],
             sendCatalog: true
         });
+        //click event is binded/implemented here
+        this.customerForm.get('notification').valueChanges
+            .subscribe(function (value) { return _this.setNotification(value); });
+        var emailControl = this.customerForm.get('emailGroup.email');
+        emailControl.valueChanges.debounceTime(1000).subscribe(function (value) {
+            return _this.setMessage(emailControl);
+        });
     };
     CustomerComponent.prototype.save = function () {
         console.log(this.customerForm);
         console.log('Saved: ' + JSON.stringify(this.customerForm.value));
+    };
+    CustomerComponent.prototype.setMessage = function (c) {
+        var _this = this;
+        this.emailMessage = '';
+        if ((c.touched || c.dirty) && c.errors) {
+            this.emailMessage = Object.keys(c.errors).map(function (key) {
+                return _this.validationMessages[key];
+            }).join(' ');
+        }
     };
     CustomerComponent.prototype.setNotification = function (notifyVia) {
         var phoneControl = this.customerForm.get('phone');

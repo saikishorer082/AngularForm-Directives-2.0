@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 //building blocks
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn } from "@angular/forms";
+import 'rxjs/add/operator/debounceTime';
 
 import { Customer } from './customer';
 
@@ -34,8 +35,15 @@ export class CustomerComponent implements OnInit {
 
     getData: boolean = false;
 
+
     //Explicit Defining of root 
     customer: Customer = new Customer();
+    emailMessage: string;
+
+    private validationMessages = {
+        required: 'Please enter your email address.',
+        pattern: 'Please enter a valid email address.'
+    };
 
     constructor(private fb: FormBuilder) { }
 
@@ -75,12 +83,29 @@ export class CustomerComponent implements OnInit {
             rating:['', ratingRange(1,5)],
             sendCatalog: true
         });
+
+        //click event is binded/implemented here
+        this.customerForm.get('notification').valueChanges
+            .subscribe(value => this.setNotification(value));
+
+        const emailControl = this.customerForm.get('emailGroup.email');
+        emailControl.valueChanges.debounceTime(1000).subscribe(value =>
+            this.setMessage(emailControl));
     }
       
 
     save() {
         console.log(this.customerForm);
         console.log('Saved: ' + JSON.stringify(this.customerForm.value));
+    }
+
+    setMessage(c: AbstractControl): void {
+        
+        this.emailMessage = '';
+        if ((c.touched || c.dirty) && c.errors) {
+            this.emailMessage = Object.keys(c.errors).map(key =>
+                this.validationMessages[key]).join(' ');
+        }
     }
 
     setNotification(notifyVia: string): void {
@@ -92,4 +117,6 @@ export class CustomerComponent implements OnInit {
         }
         phoneControl.updateValueAndValidity();
     }
+
+
  }
