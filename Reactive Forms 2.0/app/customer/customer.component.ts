@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 //building blocks
-import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn } from "@angular/forms";
+import { FormGroup, FormBuilder, FormArray, Validators, AbstractControl, ValidatorFn } from "@angular/forms";
 import 'rxjs/add/operator/debounceTime';
 
 import { Customer } from './customer';
@@ -40,10 +40,16 @@ export class CustomerComponent implements OnInit {
     customer: Customer = new Customer();
     emailMessage: string;
 
+
+    get addresses(): FormArray{
+        return<FormArray>this.customerForm.get('addresses');
+    }
+
     private validationMessages = {
         required: 'Please enter your email address.',
         pattern: 'Please enter a valid email address.'
     };
+
 
     constructor(private fb: FormBuilder) { }
 
@@ -81,7 +87,8 @@ export class CustomerComponent implements OnInit {
             phone: '',
             notification: 'email',
             rating:['', ratingRange(1,5)],
-            sendCatalog: true
+            sendCatalog: true,
+            addresses: this.fb.array([this.buildAddress()])
         });
 
         //click event is binded/implemented here
@@ -92,8 +99,22 @@ export class CustomerComponent implements OnInit {
         emailControl.valueChanges.debounceTime(1000).subscribe(value =>
             this.setMessage(emailControl));
     }
-      
 
+    addAddress(): void {
+        this.addresses.push(this.buildAddress());
+    }
+
+    buildAddress(): FormGroup{
+        return this.fb.group({
+
+            addressType: 'home',
+            street1: '',
+            street2: '',
+            city: '',
+            state: '',
+            zip: ''
+        })
+    }
     save() {
         console.log(this.customerForm);
         console.log('Saved: ' + JSON.stringify(this.customerForm.value));
